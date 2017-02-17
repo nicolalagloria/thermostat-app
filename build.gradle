@@ -1,0 +1,44 @@
+def projectName = "i2Ctemp-app-demo-1.0"
+
+ext {
+    warpIp = '192.168.7.2'
+    username = 'root'
+    destDir = '~'
+    identityFile = '/Users/nik/.ssh/id_rsa'
+}
+
+task installApp (type: Exec) {
+
+    File mySetup = file('./setup.py')
+    def setUpFile = file(mySetup.absolutePath)
+
+    commandLine "python", "${setUpFile}", "sdist"
+
+}
+
+task predeploy << {
+
+    def cmdStr = "ssh -i ${identityFile} ${username}@${warpIp} bash -s"
+
+    println cmdStr
+    def cmd = cmdStr.execute()
+    "echo cd /home/root; rm -rf ${projectName}; rm -rf ${projectName}.tar.gz".execute().pipeTo(cmd)
+    cmd.waitFor()
+
+}
+task deploy(type: Exec, dependsOn: [predeploy, installApp]) {
+
+    File myPackage = file("./dist/${projectName}.tar.gz")
+    def myPackageFile = file(myPackage.absolutePath)
+    commandLine 'scp',  '-i', "${identityFile}", "${myPackageFile}", "${username}@${warpIp}:${destDir}"
+    doLast {
+        tasks.untar.execute()
+    }
+}
+
+task untar (type: Exec, dependsOn:[deploy]){
+    commandLine 'ssh',  '-i', "${identityFile}", "${username}@${warpIp}", "tar xzf ${projectName}.tar.gz"
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}
