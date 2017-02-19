@@ -21,9 +21,9 @@ class Device(object):
     def init_device(self):
         self.i2c.write(self.MCP9808_REG_CONFIG)
         self.i2c.write(self.MCP9808_REG_CONFIG_SHUTDOWN)
-        self.i2c.write(self.MCP9808_REG_AMBIENT_TEMP)
 
     def read_temperature(self):
+        self.i2c.write(self.MCP9808_REG_AMBIENT_TEMP)
         val = self.i2c.read(2)  # read 16 bit register
         t = int(val.encode("hex"), 16)
         temp = float(t & 0x0fff) / 16
