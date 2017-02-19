@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui, QtCore
 from threading import Thread
 
-__author__ = 'nik'
+__author__ = 'Nicola La Gloria'
 
 
 class Device(object):
