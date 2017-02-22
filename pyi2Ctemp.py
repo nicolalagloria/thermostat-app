@@ -152,15 +152,15 @@ class UIWindow(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setSpacing(0)
-        self.layout.setContentsMargins(25, 25, 0, 0)  # when we rotate layout, this order will change
+        self.layout.setContentsMargins(30, 6, 0, 0)  # when we rotate layout, this order will change
 
         self.layout.addWidget(self.label_city)
-        self.layout.addSpacing(15)
+        self.layout.addSpacing(5)
 
         self.layout.addWidget(self.label_current)
         self.layout.addWidget(self.temperature_current)
 
-        self.layout.addSpacing(10)
+        self.layout.addSpacing(5)
 
         self.layout.addWidget(self.label_dates)
         self.layout.addWidget(label_weather_icons)
@@ -184,17 +184,12 @@ class UIWindow(QtWidgets.QWidget):
 
     def eventHandler(self, temp):
         if (temp > 28.4 and self.hvac_mode == None):
-
             self.window_palette.setColor(self.backgroundRole(), QtGui.QColor(24, 75, 255))
             self.setPalette(self.window_palette)
 
-            self.label_city.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-            self.label_current.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-
-            self.label_dates.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-
-            self.temperature_current.label.setStyleSheet("background-color: rgb(24,75,255);");
-            self.temperature_current.label_units.setStyleSheet("background-color: rgb(24,75,255);");
+            self.label_city.setStyleSheet("color: rgb(235,235,235)")
+            self.label_current.setStyleSheet("color: rgb(235,235,235)")
+            self.label_dates.setStyleSheet("color: rgb(235,235,235)")
 
             self.hvac_mode = "Cool"
 
@@ -202,26 +197,19 @@ class UIWindow(QtWidgets.QWidget):
             self.window_palette.setColor(self.backgroundRole(), QtGui.QColor(255, 127, 17))
             self.setPalette(self.window_palette)
 
-            self.label_city.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-            self.label_current.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-
-            self.label_dates.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-
-            self.temperature_current.label.setStyleSheet("background-color: rgb(255,127,17);");
-            self.temperature_current.label_units.setStyleSheet("background-color: rgb(255,127,17);");
+            self.label_city.setStyleSheet("color: rgb(200,200,200)")
+            self.label_current.setStyleSheet("color: rgb(200,200,200)")
+            self.label_dates.setStyleSheet("color: rgb(200,200,200)")
 
             self.hvac_mode = "Heat"
 
         if ((temp < 26.0 and self.hvac_mode == "Cool") or (temp > 25.0 and self.hvac_mode == "Heat")):
             self.window_palette.setColor(self.backgroundRole(), QtGui.QColor(0, 0, 0))
             self.setPalette(self.window_palette)
-            self.label_city.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-            self.label_current.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-
-            self.label_dates.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-
-            self.temperature_current.label.setStyleSheet("background-color: rgb(0,0,0);");
-            self.temperature_current.label_units.setStyleSheet("background-color: rgb(0,0,0);");
+			
+            self.label_city.setStyleSheet("color: rgb(200,200,200)")
+            self.label_current.setStyleSheet("color: rgb(200,200,200)")
+            self.label_dates.setStyleSheet("color: rgb(200,200,200)")
 
             self.hvac_mode = None
 
