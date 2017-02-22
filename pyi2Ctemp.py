@@ -1,4 +1,4 @@
-#from i2cdev import I2C
+from i2cdev import I2C
 from signal import *
 import sys
 import time
@@ -208,12 +208,13 @@ class UIWindow(object):
 		self.window.show()
 
 		#device, bus = 0x18, 2
-		#self.my_device = Device(device, bus)
+		self.my_device = Device(device, bus)
 		t = Thread(target=self.display_temperature)
 		t.start()
 
 	def display_temperature(self):
 		while 1:
+			self.temperature_current.set(self.my_device.read_temperature)
 			#self.lcd_number.display("%0.2f" % self.my_device.read_temperature())
 			#self.lcd_number.display("%0.1f" % 21.9)
 			time.sleep(2)
