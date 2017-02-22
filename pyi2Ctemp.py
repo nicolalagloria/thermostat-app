@@ -138,8 +138,8 @@ class UIWindow( QtWidgets.QWidget ):
 		
 		
 		#define weather forecast objects
-		label_dates = QtWidgets.QLabel("<font color='#a79e88'>MON &nbsp;&nbsp;&nbsp; TUE &nbsp;&nbsp;&nbsp;&nbsp; WED &nbsp;&nbsp;&nbsp;&nbsp; THU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRI</font>")
-		label_dates.setFont(font_label)
+		self.label_dates = QtWidgets.QLabel("<font color='#a79e88'>MON &nbsp;&nbsp;&nbsp; TUE &nbsp;&nbsp;&nbsp;&nbsp; WED &nbsp;&nbsp;&nbsp;&nbsp; THU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRI</font>")
+		self.label_dates.setFont(font_label)
 		
 		img_path = os.getcwd() + "/resources/weather_icons.png"
 		
@@ -162,7 +162,7 @@ class UIWindow( QtWidgets.QWidget ):
 		
 		self.layout.addSpacing(10)
 		
-		self.layout.addWidget(label_dates)
+		self.layout.addWidget( self.label_dates )
 		self.layout.addWidget(label_weather_icons)
 		
 		self.layout.addStretch()
@@ -191,9 +191,12 @@ class UIWindow( QtWidgets.QWidget ):
 			self.label_city.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
 			self.label_current.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
 			
+			self.label_dates.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
+			
+			
+			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(24,75,255);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(24,75,255);");
-			
 			
 			
 			self.hvac_mode = "Cool"
@@ -204,6 +207,9 @@ class UIWindow( QtWidgets.QWidget ):
 			
 			self.label_city.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
 			self.label_current.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
+			
+			self.label_dates.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
+			
 			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(255,127,17);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(255,127,17);");
@@ -218,6 +224,8 @@ class UIWindow( QtWidgets.QWidget ):
 			self.setPalette(self.window_palette)
 			self.label_city.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
 			self.label_current.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
+			
+			self.label_dates.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
 			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(0,0,0);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(0,0,0);");
