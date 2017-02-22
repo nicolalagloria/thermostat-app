@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from i2cdev import I2C
 from signal import *
 import sys
@@ -39,36 +41,13 @@ class Device(object):
 		self.i2c.close()
 		print("Exit")
 		sys.exit(0)
-		
-class VerticalLabel(QtWidgets.QLabel):
-
-	def __init__(self, *args):
-		QtWidgets.QLabel.__init__(self, *args)
-
-	def paintEvent(self, event):
-		QtWidgets.QLabel.paintEvent(self, event)
-		painter = QtGui.QPainter (self)
-		painter.translate(0, self.height()-1)
-		painter.rotate(-90)
-		self.setGeometry(self.x(), self.y(), self.height(), self.width())
-		QtWidgets.QLabel.render(self, painter)
-
-	def minimumSizeHint(self):
-		size = QtWidgets.QLabel.minimumSizeHint(self)
-		return QtCore.QSize(size.height(), size.width())
-
-	def sizeHint(self):
-		size = QtWidgets.QLabel.sizeHint(self)
-		return QtCore.QSize(size.height(), size.width())
 
 class TemperatureWidget(QtWidgets.QWidget):
 	def __init__(self, temperature = "--.-", units = "C", size = 48, palette = None):      
 		super(TemperatureWidget,self).__init__()
 		
-		global VerticalLabel
-		
-		self.label = VerticalLabel()
-		self.label_units = VerticalLabel()
+		self.label = QtWidgets.QLabel()
+		self.label_units = QtWidgets.QLabel()
 		
 		self.setTemperature( temperature )
 		self.setUnits( units )
@@ -82,13 +61,13 @@ class TemperatureWidget(QtWidgets.QWidget):
 		self.label_units.setFont(QtGui.QFont("Effra", size/1.6))
 		self.label_units.setContentsMargins( 0, round(size/8), 0, round(size/4))
 		
-		self.layout = QtWidgets.QVBoxLayout()
+		self.layout = QtWidgets.QHBoxLayout()
 		self.layout.setContentsMargins(0,0,0,0)
 		
 		self.layout.setSpacing(0)
-		self.layout.addStretch()
-		self.layout.addWidget( self.label_units )
 		self.layout.addWidget( self.label )
+		self.layout.addWidget( self.label_units )
+		self.layout.addStretch()		
 		
 		self.setLayout( self.layout )
 		
@@ -118,7 +97,7 @@ class UIWindow( QtWidgets.QWidget ):
 
 	def __init__(self):
 		super(UIWindow,self).__init__()
-		global VerticalLabel
+		
 		#self.window = QtWidgets.QWidget()
 		self.setGeometry(0, 0, 320, 240)
 		
@@ -141,90 +120,65 @@ class UIWindow( QtWidgets.QWidget ):
 		#define some fonts
 		#self.newfont = QtGui.QFont("Effra", 12, QtGui.QFont.Bold)
 		font_label = QtGui.QFont("Effra", 14)
-		font_city =  QtGui.QFont("Effra", 18)
+		font_city =  QtGui.QFont("Effra", 24)
 	
 		#define our various labels
 		
-		self.label_city = VerticalLabel("PORTALAND, OR")
+		self.label_city = QtWidgets.QLabel("HOME")
 		self.label_city.setPalette(palette_fg_tan)
 		self.label_city.setFont( font_city )
 		
-		self.label_current = VerticalLabel("CURRENT")
+		self.label_current = QtWidgets.QLabel("CURRENT TEMPERATURE:")
 		self.label_current.setPalette(palette_fg_tan)
 		self.label_current.setFont(font_label)
 		
-		self.label_outside = VerticalLabel("OUTSIDE")
-		self.label_outside.setPalette(palette_fg_tan)
-		self.label_outside.setFont(font_label)
-		
-		self.label_feelslike = VerticalLabel("FEELS LIKE")
-		self.label_feelslike.setPalette(palette_fg_tan)
-		self.label_feelslike.setFont(font_label)
-		
 		#define our temperature objects
 		
-		self.temperature_current = TemperatureWidget(21.1, "C", 48, palette_fg_white)
-		self.temperature_outside = TemperatureWidget(18.7, "C", 24, palette_fg_gray)
-		self.temperature_feelslike = TemperatureWidget(None, "C", 24, palette_fg_gray)
+		self.temperature_current = TemperatureWidget(21.8, "C", 60, palette_fg_white)
 		
 		
 		#define weather forecast objects
-		label_dates = VerticalLabel("<font color='#a79e88'>TUE &nbsp; WED &nbsp; THU &nbsp; FRI &nbsp;&nbsp; SAT</font>")
+		label_dates = QtWidgets.QLabel("<font color='#a79e88'>MON &nbsp;&nbsp;&nbsp; TUE &nbsp;&nbsp;&nbsp;&nbsp; WED &nbsp;&nbsp;&nbsp;&nbsp; THU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRI</font>")
 		label_dates.setFont(font_label)
 		
 		img_path = os.getcwd() + "/resources/weather_icons.png"
-
+		
 		pixmap = QtGui.QPixmap( img_path )
-		#pixmap.transformed(QtGui.QTransform().rotate(90))
 		
 		label_weather_icons = QtWidgets.QLabel()
 		label_weather_icons.setContentsMargins(0,5,0,0)
 		label_weather_icons.setPixmap(pixmap)
 		
 		
-		self.layout = QtWidgets.QHBoxLayout()
+		self.layout = QtWidgets.QVBoxLayout()
 		self.layout.setSpacing( 0 )
-		self.layout.setContentsMargins(20,0,0,16) #when we rotate layout, this order will change
+		self.layout.setContentsMargins(25,25,0,0) #when we rotate layout, this order will change
 		
 		self.layout.addWidget( self.label_city )
-		self.layout.addSpacing(20)
+		self.layout.addSpacing(15)
 		
 		self.layout.addWidget( self.label_current )
 		self.layout.addWidget( self.temperature_current )
 		
 		self.layout.addSpacing(10)
 		
-		ext_temperature_layout = QtWidgets.QVBoxLayout()
-		self.layout.addLayout(ext_temperature_layout)
+		self.layout.addWidget(label_dates)
+		self.layout.addWidget(label_weather_icons)
 		
-		outside_temperature_container_layout = QtWidgets.QHBoxLayout()
-		outside_temperature_container_layout.addWidget( self.label_outside )
-		outside_temperature_container_layout.addWidget(self.temperature_outside)
-		
-		feelslike_temperature_container_layout = QtWidgets.QHBoxLayout()
-		feelslike_temperature_container_layout.addWidget( self.label_feelslike )
-		feelslike_temperature_container_layout.addWidget(self.temperature_feelslike)
-		
-		
-		ext_temperature_layout.addStretch()
-		ext_temperature_layout.addLayout(feelslike_temperature_container_layout)
-		ext_temperature_layout.addSpacing(25)
-		ext_temperature_layout.addLayout(outside_temperature_container_layout)
-		
-		self.layout.addSpacing(30)
-		#self.layout.addWidget( label_dates )		
-		#self.layout.addWidget(label_weather_icons)
 		self.layout.addStretch()
 		
 		self.setLayout(self.layout)
 		self.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool)
 
 		device, bus = 0x18, 2
-		self.my_device = Device(device, bus)
-		self.thread = DeviceThread(self.my_device)		
-		self.thread.start()
+		try:
+			self.my_device = Device(device, bus)
+			self.thread = DeviceThread(self.my_device)		
+			self.thread.start()
 		
-		self.thread.signal.connect( self.eventHandler )
+			self.thread.signal.connect( self.eventHandler )
+		except:
+			pass;
 		
 	hvac_mode = None
 	
@@ -236,17 +190,10 @@ class UIWindow( QtWidgets.QWidget ):
 			
 			self.label_city.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
 			self.label_current.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-			self.label_outside.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-			self.label_feelslike.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
 			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(24,75,255);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(24,75,255);");
 			
-			self.temperature_outside.label.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-			self.temperature_outside.label_units.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-			
-			self.temperature_feelslike.label.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
-			self.temperature_feelslike.label_units.setStyleSheet("background-color: rgb(24,75,255); color: rgb(235,235,235)");
 			
 			
 			self.hvac_mode = "Cool"
@@ -257,17 +204,10 @@ class UIWindow( QtWidgets.QWidget ):
 			
 			self.label_city.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
 			self.label_current.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-			self.label_outside.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-			self.label_feelslike.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
 			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(255,127,17);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(255,127,17);");
 			
-			self.temperature_outside.label.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-			self.temperature_outside.label_units.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-			
-			self.temperature_feelslike.label.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
-			self.temperature_feelslike.label_units.setStyleSheet("background-color: rgb(255,127,17); color: rgb(200,200,200)");
 			
 			
 			
@@ -278,17 +218,10 @@ class UIWindow( QtWidgets.QWidget ):
 			self.setPalette(self.window_palette)
 			self.label_city.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
 			self.label_current.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-			self.label_outside.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-			self.label_feelslike.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
 			
 			self.temperature_current.label.setStyleSheet("background-color: rgb(0,0,0);");
 			self.temperature_current.label_units.setStyleSheet("background-color: rgb(0,0,0);");
 			
-			self.temperature_outside.label.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-			self.temperature_outside.label_units.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-			
-			self.temperature_feelslike.label.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
-			self.temperature_feelslike.label_units.setStyleSheet("background-color: rgb(0,0,0); color: rgb(200,200,200)");
 			
 			self.hvac_mode = None
 			

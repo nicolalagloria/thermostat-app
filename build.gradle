@@ -4,7 +4,7 @@ ext {
     warpIp = '192.168.7.2'
     username = 'root'
     destDir = '~'
-    identityFile = '/Users/nik/.ssh/id_rsa'
+    identityFile = '/Users/mooreaa/.ssh/id_rsa_aaron_at_revolution-robotics.com'
 }
 
 task installApp (type: Exec) {
