@@ -156,7 +156,7 @@ class UIWindow(object):
 		label_dates = QtWidgets.QLabel("<font color='#a79e88'>TUE &nbsp; &nbsp; &nbsp; WED &nbsp; &nbsp;&nbsp; THU &nbsp; &nbsp;&nbsp;&nbsp; FRI &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SAT</font>")
 		label_dates.setFont(font_label)
 		
-		img_path = os.getcwd() + '/weather_icons.png'
+		img_path = os.getcwd() + 'resources/weather_icons.png'
 		#if ( not os.path.isfile(img_path) ):
 		#	print ( "img not found" )
 		pixmap = QtGui.QPixmap( img_path )
