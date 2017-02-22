@@ -8,4 +8,5 @@ setup(
     author="Nicola La Gloria",
     url="http://warpx.io",
     scripts=['pyi2Ctemp.py'],
+    data_files=[('resources', ['resources/weather_icons.png', 'resources/effra-regular.ttf'])]
 )
