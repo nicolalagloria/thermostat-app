@@ -207,7 +207,7 @@ class UIWindow(object):
 		#self.window.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool)
 		self.window.show()
 
-		#device, bus = 0x18, 2
+		device, bus = 0x18, 2
 		self.my_device = Device(device, bus)
 		t = Thread(target=self.display_temperature)
 		t.start()
