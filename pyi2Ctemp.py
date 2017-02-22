@@ -8,9 +8,7 @@ from threading import Thread
 
 import os
 
-__author__ = 'Nicola La Gloria' + 'Aaron Oki Moore'
-
-#http://softwaretester.info/install-and-upgrade-pip-on-mac-os-x/
+__author__ = 'Nicola La Gloria and Aaron Oki Moore'
 
 
 class Device(object):
@@ -52,10 +50,10 @@ class TemperatureWidget(QtWidgets.QWidget):
 		self.label.setPalette(palette)
 		self.label_units.setPalette(palette)
 		
-		self.label.setFont(QtGui.QFont("Effra", size))
+		self.label.setFont(QtGui.QFont("Arial", size))
 		self.label.setContentsMargins(0,0,0,0)
 		
-		self.label_units.setFont(QtGui.QFont("Effra", size/1.6))
+		self.label_units.setFont(QtGui.QFont("Arial", size/1.6))
 		self.label_units.setContentsMargins( round(size/8), round(size/4),0,0)
 		
 		
@@ -63,8 +61,6 @@ class TemperatureWidget(QtWidgets.QWidget):
 		self.layout.setContentsMargins(0,0,0,0)
 		
 		self.layout.setSpacing(0)
-		#lael_temperature_current_units.setAlignment(QtCore.Qt.AlignBottom)
-		#temperature_layout.addSpacing(16) #this is done as margin in the layout
 		self.layout.addWidget( self.label )
 		self.layout.addWidget( self.label_units )
 		self.layout.addStretch()
@@ -97,14 +93,11 @@ class UIWindow(object):
 		self.window = QtWidgets.QWidget()
 		self.window.setGeometry(0, 0, 240, 320)
 		
-		
 		# set Window background color
 		
 		window_palette = self.window.palette()
 		window_palette.setColor(self.window.backgroundRole(), QtGui.QColor(32,32,32) )
 		self.window.setPalette(window_palette)
-		
-		
 		
 		# define a few more palettes for fonts
 		
@@ -113,30 +106,23 @@ class UIWindow(object):
 		
 		palette_fg_tan = self.window.palette();
 		palette_fg_tan.setColor(QtGui.QPalette.Foreground, QtGui.QColor(167,158,136))
-		#palette_fg_tan.setColor(QtGui.QPalette.Background, QtGui.QColor(67,58,36)) #testing background fill, enable setAutoFillBackground to True if used
 		
 		palette_fg_gray = self.window.palette();
 		palette_fg_gray.setColor(QtGui.QPalette.Foreground, QtGui.QColor(127,127,127))
-		
-		
-		
+			
 		#define some fonts
 		#self.newfont = QtGui.QFont("Effra", 12, QtGui.QFont.Bold)
-		font_label = QtGui.QFont("Effra", 14)
-		font_city =  QtGui.QFont("Effra", 18)
-	
+		font_label = QtGui.QFont("Arial", 14)
+		font_city =  QtGui.QFont("Arail", 18)
 	
 		#define our various labels
 		
 		label_city = QtWidgets.QLabel("PORTALAND, OR")
 		label_city.setPalette(palette_fg_tan)
 		label_city.setFont( font_city )
-		#label_city.setMargin(0)		
-		#label_city.setAutoFillBackground(True)
 		
 		label_current = QtWidgets.QLabel("<font color='#a79e88'>CURRENT</font>")
 		label_current.setFont(font_label)
-		#label_current.setContentsMargins(0,0,0,0)
 		
 		label_outside = QtWidgets.QLabel("<font color='#a79e88'>OUTSIDE</font>")
 		label_outside.setFont(font_label)
@@ -144,7 +130,6 @@ class UIWindow(object):
 		label_feelslike = QtWidgets.QLabel("<font color='#a79e88'>FEELS LIKE</font>")
 		label_feelslike.setFont(font_label)
 		
-
 		#define our temperature objects
 		
 		self.temperature_current = TemperatureWidget(21.1, "C", 48, palette_fg_white)
@@ -153,10 +138,10 @@ class UIWindow(object):
 		
 		
 		#define weather forecast objects
-		label_dates = QtWidgets.QLabel("<font color='#a79e88'>TUE &nbsp; &nbsp; &nbsp; WED &nbsp; &nbsp;&nbsp; THU &nbsp; &nbsp;&nbsp;&nbsp; FRI &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SAT</font>")
+		label_dates = QtWidgets.QLabel("<font color='#a79e88'>TUE &nbsp; WED &nbsp; THU &nbsp;&nbsp;&nbsp; FRI &nbsp;&nbsp;&nbsp;&nbsp; SAT</font>")
 		label_dates.setFont(font_label)
 		
-		img_path = os.getcwd() + 'resources/weather_icons.png'
+		img_path = os.getcwd() + '/resources/weather_icons.png'
 		#if ( not os.path.isfile(img_path) ):
 		#	print ( "img not found" )
 		pixmap = QtGui.QPixmap( img_path )
@@ -193,38 +178,32 @@ class UIWindow(object):
 		ext_temperature_layout.addLayout(feelslike_temperature_container_layout)
 		ext_temperature_layout.addStretch()
 		
-		
 		self.layout.addSpacing(40)
-		
 		self.layout.addWidget( label_dates )		
-		
 		self.layout.addWidget(label_weather_icons)
-		
 		self.layout.addStretch()
 		
-		#self.layout.addWidget(self.lcd_number)
 		self.window.setLayout(self.layout)
-		#self.window.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool)
+		self.window.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool)
 		self.window.show()
 
 		device, bus = 0x18, 2
 		self.my_device = Device(device, bus)
-		t = Thread(target=self.display_temperature)
-		t.start()
+		self.t = Thread(target=self.display_temperature)
+		self._running = True
+		self.t.start()
 
 	def display_temperature(self):
-		while 1:
-			self.temperature_current.set(self.my_device.read_temperature)
-			#self.lcd_number.display("%0.2f" % self.my_device.read_temperature())
-			#self.lcd_number.display("%0.1f" % 21.9)
-			time.sleep(2)
-
+		while self._running:
+			self.temperature_current.setTemperature( self.my_device.read_temperature )
+			time.sleep(1)
 
 def main():
 	app = QtWidgets.QApplication(sys.argv)
 	window = UIWindow()
 	ret = app.exec_()
 	window.my_device.close()
+	window._running = False
 	sys.exit(ret)
 
 if __name__ == '__main__':
